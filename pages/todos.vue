@@ -1,8 +1,8 @@
 <template>
 <div> 
     
-  <input type="text"  name="title" placeholder="タイトル"   v-model="addtitle">
-  <textarea placeholder="内容"  name="content" v-model="addcontent">
+  <input type="text"  name="title" placeholder="タイトル"   v-model="todo.title">
+  <textarea placeholder="内容"  name="content" v-model="todo.content">
 
   </textarea>
 
@@ -25,9 +25,13 @@ import Vuex from 'vuex'
 export default {
   data:  function () {
     return{
-    addtitle:'',
-    addcontent:'',
-    // sutatus:""
+     todo: {
+       title:'',
+       content:'',
+       id:'',
+       created_at:'',
+       idDoing: false
+     }
     }
   },
   computed: {
@@ -37,11 +41,11 @@ export default {
   },
   methods: {
     addTodo:function(){
-      this.$store.commit('todos/add',{title: this.addtitle,content:this.addcontent})
-      console.log(this.addtitle)
-      console.log(this.addcontent)
-      this.addtitle =""
-      this.addcontent =""
+      this.$store.dispatch('todos/add',{todo: this.todo})
+      console.log(this.todo)
+      // console.log(this.addcontent)
+      this.todo.title =""
+      this.todo.content =""
     },
   }
 }

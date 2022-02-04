@@ -32,7 +32,7 @@
         console.log(this.editTitle)
         console.log(this.editContent)
         console.log(dId)
-        this.$store.commit('todos/update',{id:dId,title:this.editTitle,content:this.editContent});
+        this.$store.dispatch('todos/update',{id:dId,title:this.editTitle,content:this.editContent});
         this.editTitle ="";
         this.editContent = ""
         window.location.href = '/itiran'
