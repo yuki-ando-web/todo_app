@@ -6,7 +6,7 @@
   <li v-for="(todo,index) in todos" v-bind:key="">
 
   <section class="card" >
-   {{todo.id}}
+   <!-- {{todo.id}} -->
    <div class="card-todo">
      <h1 class="card-title">{{todo.title}}</h1>
      <select v-on:change="chengeStatus(index)" v-bind:class="{doing:isDoing}" >
@@ -15,14 +15,15 @@
        <option id="status" value="kannryou">完了</option>
      </select>
 　　  <p class="card-content">{{todo.content}}</p>
+<!-- <p>{{ todo.create_at.toDate().toLocaleString() }}</p> -->
   </div>
 <div class="card-button clearfix">
-       <!-- <router-link :to="`about/${todo.id}`">編集</router-link> -->
-    <button class="deletetButton" v-on:click="deleteTodo(todo)">削除</button>
+       <router-link :to= "`about/${todo.id}`" class="editButton">編集</router-link>
+    <button class="deletetButton" v-on:click="deleteTodo(todo.id)">削除</button>
 </div>
   </section>
   </li>
-<button v-on:click="a">押す</button>
+<!-- <button v-on:click="a">押す</button> -->
 </ul>
 </template>
 
@@ -53,9 +54,9 @@
   },
   
   methods: {
-    deleteTodo(todo){
-      this.$store.commit('todos/remove',todo)
-      console.log(todos)
+    deleteTodo(id){
+      this.$store.dispatch('todos/remove',{id})
+      console.log(id)
     },
     a(){
       this.$store.commit('todos/delete')
@@ -97,19 +98,25 @@ select {
   background-color:rgb(211, 211, 211);
   border:solid 1px
 }
-  
+.card-button{
+  display: flex;
+  justify-content:flex-end;
+}  
   .clearfix::after{
     clear: both;
   }
   .card-button button {
-    background-color: rgb(182, 182, 182);
     border-radius: 5;
-    margin: 5px;
+    background-color:red;
+    margin-right: 5px;
+    padding: 1px 3px;
     float: right;
   }
-  .editButton{
+  .card-button .editButton{
     border-radius: 5;
-    margin-left: px;
+    background-color: rgb(182, 182, 182);
+    color: black;
+    padding: 1px 2px;
   }
   .deleatButton{
     border-radius: 5;

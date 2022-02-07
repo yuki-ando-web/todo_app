@@ -1,42 +1,56 @@
 <template>
   <section class="card">
+<form v-on:submit.prevent="editTodo">
    <div class="card-todo">
-     <input class="card-title" v-model="editTitle" >
-　　  <textarea class="card-content" v-model="editContent"></textarea>
+     <input class="card-title" id="title" :value="detailTodo.title">
+　　  <input class="card-content" id="content" :value="detailTodo.content">
   </div>
 <div class="card-button clearfix">
-  　<button clsss="editButton" v-on:click="editTodo(detailTodo)">編集完了</button>
-    
+  　<button clsss="editButton" type="submit">編集完了</button>
 </div>
+  </form>
   </section>
 </template>
 
+  
 <script>
  export default {
   data:  function () {
     return{
-      detailTodo : "",
-      editTitle : "",
-      editContent : "",
+      detailTodo : {
+      title : "",
+      content : "", 
+      id:"",
+      created_at : "", 
+      updated_at : "",     
+      }
     }
   },
   created: function () {
     this.detailTodo = this.$store.state.todos.todos.find(e => String(e.id) === this.$route.params.id) 
-    this.editTitle = this.detailTodo.title
-    this.editContent = this.detailTodo.content
+    
   },
-  methods: {
-    editTodo:function () {
-      let dId = this.detailTodo.id ;
-      if(this.editTitle != '' && this.editContent != ''){
-        console.log(this.editTitle)
-        console.log(this.editContent)
-        console.log(dId)
-        this.$store.dispatch('todos/update',{id:dId,title:this.editTitle,content:this.editContent});
-        this.editTitle ="";
-        this.editContent = ""
-        window.location.href = '/itiran'
-        }
+  
+  
+   methods: {
+    editTodo:function (e) {
+      console.log("e")
+      const editTodo = {
+        title: e.target.title.value,
+        content: e.target.content.value,
+        id:this.detailTodo.id,
+        created_at: this.detailTodo.created_at
+      }
+    
+        
+        this.$store.dispatch('todos/update',{editTodo})
+         console.log(editTodo)
+          setTimeout(() =>{
+            window.location.href = '/itiran'
+          },1000)
+        
+        
+        
     }
   }}
   
@@ -73,8 +87,9 @@
     float: right;
   }
   .editButton{
+
     border-radius: 5;
-    margin-left: px;
+    float: right;
   }
   .deleatButton{
     border-radius: 5;

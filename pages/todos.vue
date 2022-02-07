@@ -43,7 +43,7 @@ export default {
     addTodo:function(){
       this.$store.dispatch('todos/add',{todo: this.todo})
       console.log(this.todo)
-      // console.log(this.addcontent)
+      console.log(this.addcontent)
       this.todo.title =""
       this.todo.content =""
     },
