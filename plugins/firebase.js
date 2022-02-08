@@ -13,5 +13,5 @@ if (!firebase.apps.length) {
     }
   )
 }
-
+//.envファイル
 export default firebase
