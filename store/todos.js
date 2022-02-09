@@ -13,7 +13,12 @@ export const state = () => ({
     id: '',
     created_at: '',
     updated_at: '',
-  }
+  },
+  option:[
+    {id:0 ,label:'作業前'},
+    {id:1 ,label:'作業中'},
+    {id:2 ,label:'完了'}
+  ]
 })
 
 export const mutations = {
@@ -46,8 +51,31 @@ export const mutations = {
         })
       }
     }
+  },
+changeState: function(state, todo){
+  for(let i = 0; i < state.todos.length; i++) {
+    const ob = state.todos[i];
+    if(ob.id == todo.id ) {
+      let nowState;
+      for(let j = 0; j < state.option.length; j++){
+        if(state.option[j].label == ob.state){
+          nowState = state.option[j].id;
+          //最初はlabel作業前のためob.stateは0
+        }
+      }
+      nowState++;
+      if(nowState >= state.option.length){
+        nowState = 0;
+      }
+      todo.state = state.option[nowState].label
+      return;
+    }
   }
 }
+}
+
+
+
 
 export const actions = {
   add({ commit }, payload) {
@@ -56,7 +84,8 @@ export const actions = {
       content: payload.todo.content,
       id: todoRef.doc().id,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
-      updated_at: firebase.firestore.FieldValue.serverTimestamp()
+      updated_at: firebase.firestore.FieldValue.serverTimestamp(),
+      state:'作業前'
     }
     todoRef.add(todo)
     commit('add', todo)
