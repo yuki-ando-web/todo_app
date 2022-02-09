@@ -33,13 +33,12 @@ export const mutations = {
       const ob = state.todos[i];
       if (ob.id == id
       ) {
-        alert('remove it! --' + ob.title);
+        
         state.todos.splice(i, 1);
       }
     }
   },
   update(state, payload) {
-    console.log(payload)
     for (let i = 0; i < state.todos.length; i++) {
       const ob = state.todos[i];
       if (ob.id == payload.editTodo.id) {
@@ -52,10 +51,10 @@ export const mutations = {
       }
     }
   },
-changeState: function(state, todo){
-  for(let i = 0; i < state.todos.length; i++) {
-    const ob = state.todos[i];
-    if(ob.id == todo.id ) {
+  changeState: function(state, todo){
+    for(let i = 0; i < state.todos.length; i++) {
+      const ob = state.todos[i];
+      if(ob.id == todo.id ) {
       let nowState;
       for(let j = 0; j < state.option.length; j++){
         if(state.option[j].label == ob.state){
@@ -110,13 +109,33 @@ export const actions = {
             content: payload.editTodo.content,
             id: payload.editTodo.id,
             created_at: payload.editTodo.created_at,
-            updated_at: firebase.firestore.FieldValue.serverTimestamp()
+            updated_at: firebase.firestore.FieldValue.serverTimestamp(),
+            state:payload.editTodo.state
           }
           todoRef.doc(doc.id).update(updateTodo)
         })
       })
     commit('update', payload)
 
+  },
+  changeState({ commit },todo){
+    todoRef.where('id', '==', payload.editTodo.id).get(
+      snapshot.forEach(doc => {
+        let nowState;
+      for(let j = 0; j < state.option.length; j++){
+        if(state.option[j].label == ob.state){
+          nowState = state.option[j].id;
+          //最初はlabel作業前のためob.stateは0
+        }
+      }
+      nowState++;
+      if(nowState >= state.option.length){
+        nowState = 0;
+      }
+      todo.state = state.option[nowState].label
+      return;
+      })
+    )
   },
   initTodos({ commit }) {
     commit('initTodos');
