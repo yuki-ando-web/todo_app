@@ -1,18 +1,19 @@
 <template>
   <ul>
-    <li v-for="(todo, index) in todos" v-bind:key="">
-      <section class="card">
-        <div class="card-todo">
+    <p>{{this.$store.state.todos.todos}}</p>
+    <li v-for="(todo, index) in todos" v-bind:key="" v-bind:class="{progress:isProgress}">
+      <section class="card" >
+        <div class="card-todo" >
           <h1 class="card-title">{{ todo.title }}</h1>
-          <select
+          
+          <!-- <select
             v-on:change="chengeStatus(index)"
             v-bind:class="{ doing: isDoing }"
           >
             <option id="status" value="mityakusyu">未着手</option>
             <option id="status" value="sinnkoutyuu">進行中</option>
             <option id="status" value="kannryou">完了</option>
-          </select>
-          　　
+          </select> -->
           <p class="card-content">{{ todo.content }}</p>
         </div>
         <div class="card-button clearfix">
@@ -21,6 +22,14 @@
           <button class="deletetButton" v-on:click="deleteTodo(todo.id)">
             削除</button>
         </div>
+        <button class="button"
+          v-bind:class="{
+            'button--yet':todo.state == '作業前',
+            'button--progress':todo.state == '作業中',
+            'button--done':todo.state == '完了'}"
+          @click="changeState(todo)">
+    {{ todo.state }}
+  </button>
       </section>
     </li>
     <!-- <button v-on:click="a">押す</button> -->
@@ -33,34 +42,33 @@ export default {
     console.log(this.$store.state.todos.todos);
     // console.log(todos)
     return {
-      // status : "未着手",
-
-      isDoing: false,
-      isDone: false,
-
-      // sutatus:""
+      isProgress　: false
     };
   },
   computed: {
     todos() {
       return this.$store.state.todos.todos;
     },
+    chengeStatus() {
+      console.log(isProgress)
+      if(this.todo.status='作業中'){
+        isProgress= true
+      }
+    }
   },
 
   methods: {
     deleteTodo(id) {
       this.$store.dispatch("todos/remove", { id });
-      console.log(id);
     },
     a() {
       this.$store.commit("todos/delete");
     },
-    chengeStatus({ todo }) {
-      let statusId = document.getElementById("status");
-      let statusValue = statusId.getAttribute("value");
-      console.log(statusValue);
-      if (statusValue == "sinnkoutyuu") this.isDoing = true;
-    },
+    changeState: function(todo){
+      
+  this.$store.commit("todos/changeState",todo)
+},
+    
   },
 };
 </script>
@@ -110,5 +118,8 @@ select {
 }
 .deleatButton {
   border-radius: 5;
+}
+.progress {
+  background-color:red
 }
 </style>
