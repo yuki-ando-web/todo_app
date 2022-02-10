@@ -28,9 +28,6 @@ export default {
      todo: {
        title:'',
        content:'',
-       id:'',
-       created_at:'',
-       idDoing: false
      }
     }
   },
@@ -41,9 +38,7 @@ export default {
   },
   methods: {
     addTodo:function(){
-      this.$store.dispatch('todos/add',{todo: this.todo})
-      console.log(this.todo)
-      console.log(this.addcontent)
+      this.$store.dispatch('todos/addTodo',{todo: this.todo})
       this.todo.title =""
       this.todo.content =""
     },
