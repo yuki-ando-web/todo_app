@@ -22,9 +22,14 @@ export const state = () => ({
 })
 
 export const mutations = {
-  
-  add(state, todo) {
+  initTodos(state) {
+    state.todos = []
+  },
+  addTodos(state, todo) {
     state.todos.push(todo)
+  },
+  addTodo(state, todo) {
+    state.todo = todo
   },
 
   remove(state, id) {
@@ -77,7 +82,25 @@ export const mutations = {
 
 
 export const actions = {
-  add({ commit }, payload) {
+  fetchTodos({commit}) {
+    commit('initTodos')
+      todoRef.orderBy('created_at','desc').get()
+      .then(res =>{
+        res.forEach((doc) => {
+          commit('addTodos',doc.data())
+        })
+      })
+  },
+  fetchTodo({commit},payload) {
+    console.log(payload)
+    todoRef.where('id', '==', payload.id ).get()
+    .then(res => {
+      res.forEach((doc) =>{
+        commit('addTodo',doc.data())
+      })
+    })
+  },
+  addTodo({ commit }, payload) {
     const todo = {
       title: payload.todo.title,
       content: payload.todo.content,
@@ -87,9 +110,8 @@ export const actions = {
       state:'作業前'
     }
     todoRef.add(todo)
-    commit('add', todo)
   },
-  remove({ commit }, payload) {
+  deleteTodo({ commit }, payload) {
     todoRef.where('id', '==', payload.id).get()
       //vueから渡したidとfirestoreのidが等しい時
       .then(snapshot => {
@@ -97,9 +119,9 @@ export const actions = {
           todoRef.doc(doc.id).delete()
         })
       })
-    commit('remove', payload.id)
+    // commit('remove', payload.id)
   },
-  update({ commit }, payload) {
+  updateTodo({ commit }, payload) {
     todoRef.where('id', '==', payload.editTodo.id).get()
       //vueから渡したidとfirestoreのidが等しい時
       .then(snapshot => {
@@ -108,34 +130,39 @@ export const actions = {
             title: payload.editTodo.title,
             content: payload.editTodo.content,
             id: payload.editTodo.id,
-            created_at: payload.editTodo.created_at,
             updated_at: firebase.firestore.FieldValue.serverTimestamp(),
             state:payload.editTodo.state
           }
           todoRef.doc(doc.id).update(updateTodo)
         })
       })
-    commit('update', payload)
-
-  },
-  changeState({ commit },todo){
-    todoRef.where('id', '==', payload.editTodo.id).get(
-      snapshot.forEach(doc => {
-        let nowState;
-      for(let j = 0; j < state.option.length; j++){
-        if(state.option[j].label == ob.state){
-          nowState = state.option[j].id;
-          //最初はlabel作業前のためob.stateは0
+    },
+    changeState({ commit },payload){
+      
+      todoRef.where('id', '==', payload.stodo.id).get().
+      then(snapshot => {
+        snapshot.forEach(doc => {
+          console.log(payload.stodo.state)
+          if(payload.stodo.state = '作業前'){  
+        // if(payload.todo.state='作業前'で渡すと参照扱いになり、stateをmutaiton意外で変えるなとエラーになる  
+          todoRef.doc(doc.id).update({
+            state:'作業中'
+          })
         }
-      }
-      nowState++;
-      if(nowState >= state.option.length){
-        nowState = 0;
-      }
-      todo.state = state.option[nowState].label
-      return;
+        if(payload.stodo.state='作業中'){  
+          console.log(payload.todo.state)
+          todoRef.doc(doc.id).update({
+            state:'完了'
+          })
+        }
+        if(payload.todo.state='完了'){  
+          console.log(payload.todo.state)
+          todoRef.doc(doc.id).update({
+            state:'作業前'
+          })
+        }
       })
-    )
+    }) 
   },
   initTodos({ commit }) {
     commit('initTodos');
@@ -144,7 +171,6 @@ export const actions = {
 }
 export const getters = {
   orderdTodos: state => {
-    console.log("P")
     return _.sortBy(state.todos, 'created_at',);
   }
 }

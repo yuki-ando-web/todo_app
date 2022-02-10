@@ -4,21 +4,28 @@
   新規投稿ページへ
 </router-link>
     <!-- <p>{{this.$store.state.todos.todos}}</p> -->
-    <v-col v-for="(todo, index) in todos" v-bind:key="" v-bind:class="{progress:isProgress}">
+    <v-col v-for="(todo, index) in this.$store.state.todos.todos" v-bind:key="" >
       <v-card class="card" width=""
   height="">
         <div class="card-todo" > {{ todo.todo }}</div>
 
-        <div class="float-right">      
-        <v-btn class="button"  
-          v-bind:class="{
+        <div class="float-right">
+          <select name="" id="statusButton"
+         v-on:change="changeState">
+        <option value="作業前">作業前</option>    
+        <option value="作業中">作業中</option>    
+        <option value="完了">完了</option>    
+            </select>    
+         <v-btn class="button" 
+        v-bind:class="{
             'button--yet':todo.state == '作業前',
             'button--progress':todo.state == '作業中',
-            'button--done':todo.state == '完了'}"
+            'button--done':todo.state == '完了'}" 
           @click="changeState(todo)"
-          color="#EEEEEE">
-    {{ todo.state }}
-  </v-btn>
+          color="#EEEEEE"
+          > 
+     {{ todo.state }}
+   </v-btn>
         </div>
 
           <h1 class="card-title">{{ todo.title }}</h1>
@@ -39,24 +46,40 @@
 export default {
   data() {
     return {
-      isProgress: false,
     };
   },
-  computed: {
-    todos() {
-      return this.$store.state.todos.todos;
-    },
+  created(){
+    this.$store.dispatch('todos/fetchTodos')
   },
 
   methods: {
     deleteTodo(id) {
-      this.$store.dispatch("todos/remove", { id });
+      this.$store.dispatch("todos/deleteTodo", { id })
+      .then(() => {
+        setTimeout(() =>{
+          this.$store.dispatch('todos/fetchTodos')
+        },100)
+      })
     },
-    a() {
-      this.$store.commit("todos/delete");
-    },
+    
     changeState: function (todo) {
-      this.$store.commit("todos/changeState", todo);
+      const stodo ={
+        id:this.$store.state.todos.todo.id,
+        state:this.$store.state.todos.todo.state,
+      }
+      this.$store.commit("todos/changeState",todo)
+      this.$store.dispatch('todos/changeState',{stodo})
+        
+      // let select = document.getElementById('statusButton')
+      // console.log(select.value)
+      // console.log(todo)
+      // const todo = {
+      //   id:this.$store.state.todos.todo.id,
+      //   state:this.$store.state.todos.todo.state,
+      //   select:select.value,
+      // }
+      // console.log(e.target.statusButton.value)
+      
     },
   },
 };

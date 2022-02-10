@@ -2,8 +2,8 @@
   <section class="card">
 <form v-on:submit.prevent="editTodo">
    <div class="card-todo">
-     <input class="card-title" id="title" :value="detailTodo.title">
-　　  <input class="card-content" id="content" :value="detailTodo.content">
+     <input class="card-title" id="title" :value="$store.state.todos.todo.title">
+　　  <input class="card-content" id="content" :value="$store.state.todos.todo.content">
   </div>
 <div class="card-button clearfix">
   　<button clsss="editButton" type="submit">編集完了</button>
@@ -15,35 +15,24 @@
   
 <script>
  export default {
-  data:  function () {
-    return{
-      detailTodo : {
-      title : "",
-      content : "", 
-      id:"",
-      created_at : "", 
-      updated_at : "",     
-      }
-    }
-  },
+  
   created: function () {
-    this.detailTodo = this.$store.state.todos.todos.find(e => String(e.id) === this.$route.params.id) 
-    
+    const id = this.$route.params.id
+    this.$store.dispatch('todos/fetchTodo',{id})
+    console.log(this.$store.state.todos.todo)
   },
-  
-  
+
    methods: {
     editTodo:function (e) {
-      console.log("e")
       const editTodo = {
         title: e.target.title.value,
         content: e.target.content.value,
-        id:this.detailTodo.id,
-        created_at: this.detailTodo.created_at
+        id:this.$store.state.todos.todo.id,
+        state:this.$store.state.todos.todo.state,
       }
     
         
-        this.$store.dispatch('todos/update',{editTodo})
+        this.$store.dispatch('todos/updateTodo',{editTodo})
          console.log(editTodo)
           setTimeout(() =>{
             window.location.href = '/itiran'
