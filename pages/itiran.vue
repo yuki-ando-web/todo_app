@@ -3,19 +3,12 @@
 <router-link to="/">
   新規投稿ページへ
 </router-link>
-    <!-- <p>{{this.$store.state.todos.todos}}</p> -->
     <v-col v-for="(todo, index) in this.$store.state.todos.todos" v-bind:key="" >
       <v-card class="card" width=""
   height="">
         <div class="card-todo" > {{ todo.todo }}</div>
 
-        <div class="float-right">
-          <select name="" id="statusButton"
-         v-on:change="changeState">
-        <option value="作業前">作業前</option>    
-        <option value="作業中">作業中</option>    
-        <option value="完了">完了</option>    
-            </select>    
+        <div class="float-right">  
          <v-btn class="button" 
         v-bind:class="{
             'button--yet':todo.state == '作業前',
@@ -63,23 +56,8 @@ export default {
     },
     
     changeState: function (todo) {
-      const stodo ={
-        id:this.$store.state.todos.todo.id,
-        state:this.$store.state.todos.todo.state,
-      }
       this.$store.commit("todos/changeState",todo)
-      this.$store.dispatch('todos/changeState',{stodo})
-        
-      // let select = document.getElementById('statusButton')
-      // console.log(select.value)
-      // console.log(todo)
-      // const todo = {
-      //   id:this.$store.state.todos.todo.id,
-      //   state:this.$store.state.todos.todo.state,
-      //   select:select.value,
-      // }
-      // console.log(e.target.statusButton.value)
-      
+      // this.$store.dispatch('todos/changeState',{todo})
     },
   },
 };
