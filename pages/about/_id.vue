@@ -19,7 +19,6 @@
   created: function () {
     const id = this.$route.params.id
     this.$store.dispatch('todos/fetchTodo',{id})
-    console.log(this.$store.state.todos.todo)
   },
 
    methods: {
@@ -30,17 +29,12 @@
         id:this.$store.state.todos.todo.id,
         state:this.$store.state.todos.todo.state,
       }
-    
-        
         this.$store.dispatch('todos/updateTodo',{editTodo})
-         console.log(editTodo)
           setTimeout(() =>{
             window.location.href = '/itiran'
           },1000)
-        
-        
-        
     }
+    //editTodoを発動して1秒後に一覧画面に、戻す
   }}
   
 

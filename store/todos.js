@@ -18,54 +18,61 @@ export const state = () => ({
     created_at: '',
     updated_at: '',
   },
+  //id（詳細）画面で表示させるために用意
   option:[
     {id:0 ,label:'作業前'},
     {id:1 ,label:'作業中'},
     {id:2 ,label:'完了'}
   ]
+  //stateの進行状況（status)を変更させるために用意
 })
 
 export const mutations = {
   initTodos(state) {
     state.todos = []
   },
+  //初期化
+  
   addTodos(state, todo) {
     state.todos.push(todo)
   },
+  //firestoreをstateに反映
+
   addTodo(state, todo) {
     state.todo = todo
   },
+  //id(詳細)ページで特定のtodoを表示させる
 
-  remove(state, id) {
-    var num = 0;
+  deleteTodo(state, payload) {
     for (let i = 0; i < state.todos.length; i++) {
       const ob = state.todos[i];
-      if (ob.id == id
-      ) {
-        state.todos.splice(i, 1);
-      }
-    }
-  },
-  changeState: function(state, todo){
-    for(let i = 0; i < state.todos.length; i++) {
-      const ob = state.todos[i];
-      if(ob.id == todo.id ) {
-      let nowState;
-      for(let j = 0; j < state.option.length; j++){
-        if(state.option[j].label == ob.state){
-          nowState = state.option[j].id;
-          //最初はlabel作業前のためob.stateは0
+      if (ob.id == payload.id
+        ) {
+          state.todos.splice(i, 1);
         }
       }
-      nowState++;
-      if(nowState >= state.option.length){
-        nowState = 0;
+  },
+  //stateから任意のtodo削除
+  changeStatus: function(state, payload){
+    for(let i = 0; i < state.todos.length; i++) {
+      const ob = state.todos[i];
+      if(ob.id == payload.todo.id ) {
+      let nowStatus;
+      for(let j = 0; j < state.option.length; j++){
+        if(state.option[j].label == ob.status){
+          nowStatus = state.option[j].id;
+        }
       }
-      todo.state = state.option[nowState].label
+      nowStatus++;
+      if(nowStatus >= state.option.length){
+        nowStatus = 0;
+      }
+      payload.todo.status = state.option[nowStatus].label
       return;
     }
   }
 }
+  //actionからtodoを受けとる,stateのstatusの状態を変更
 }
 
 
@@ -81,15 +88,17 @@ export const actions = {
         })
       })
   },
-  // fetchTodo({commit},payload) {
-  //   console.log(payload)
-  //   todoRef.where('id', '==', payload.id ).get()
-  //   .then(res => {
-  //     res.forEach((doc) =>{
-  //       commit('addTodo',doc.data())
-  //     })
-  //   })
-  // },
+  //initTodosで初期化、作成日付潤に並び替えて,addTodosに渡す(firestoreの値をstateに反映させる)
+
+  fetchTodo({commit},payload) {
+    todoRef.where('id', '==', payload.id ).get()
+    .then(res => {
+      res.forEach((doc) =>{
+        commit('addTodo',doc.data())
+      })
+    })
+  },
+  //詳細画面から取得したidと一致したtodoを探し,addTodoに渡す(idが一致したtodoのみをstateの値にする)
   addTodo({ commit }, payload) {
     const todo = {
       title: payload.todo.title,
@@ -97,19 +106,13 @@ export const actions = {
       id: todoRef.doc().id,
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
       updated_at: firebase.firestore.FieldValue.serverTimestamp(),
-      state:'作業前'
+      status:'作業前'
     }
     todoRef.add(todo)
   },
-  deleteTodo({ commit }, payload) {
-    todoRef.where('id', '==', payload.id).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          todoRef.doc(doc.id).delete()
-        })
-      })
-  },
-  updateTodo(payload) {
+  //todos.vueからtitleとcontentを受け取りtodoを定義してfirestoreに入れる
+  
+  updateTodo({ commit },payload) {
     todoRef.where('id', '==', payload.editTodo.id).get()
       .then(snapshot => {
         snapshot.forEach(doc => {
@@ -118,41 +121,50 @@ export const actions = {
             content: payload.editTodo.content,
             id: payload.editTodo.id,
             updated_at: firebase.firestore.FieldValue.serverTimestamp(),
-            state:payload.editTodo.state
+            status:payload.editTodo.status
           }
           todoRef.doc(doc.id).update(updateTodo)
         })
       })
     },
-    changeState({ commit },payload){
-      console.log(todoRef.where('state', '==', '作業前' ))
-      todoRef.where('id', '==', payload.todo.id).where('state', '==', '作業前' ).get().
+    //id.vueからeditTodoを受け取り,その値をupdateTodoに格納,idが一致するtodoをupdateTodoに更新する
+  deleteTodo({ commit }, payload) {
+    todoRef.where('id', '==', payload.id).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          todoRef.doc(doc.id).delete()
+        })
+      })
+    commit('deleteTodo',payload)
+  },
+  //itiran.vueからidを受け取りstoreでidが一致するtodoを削除,idをcommitにも渡す
+
+    changeStatus({ commit },payload){
+      todoRef.where('id', '==', payload.todo.id).where('status', '==', '作業前' ).get().
       then(snapshot => {
         snapshot.forEach(doc => {
           todoRef.doc(doc.id).update({
-            state:'作業中'
+            status:'作業中'
           })
         })
       }),
-      todoRef.where('id', '==', payload.todo.id).where('state', '==', '作業中' ).get().
+      todoRef.where('id', '==', payload.todo.id).where('status', '==', '作業中' ).get().
       then(snapshot => {
         snapshot.forEach(doc => {
           todoRef.doc(doc.id).update({
-            state:'完了'
+            status:'完了'
           })
         })
         }),
-      todoRef.where('id', '==', payload.todo.id).where('state', '==', '完了' ).get().
+      todoRef.where('id', '==', payload.todo.id).where('status', '==', '完了' ).get().
       then(snapshot => {
         snapshot.forEach(doc => {
           todoRef.doc(doc.id).update({
-            state:'作業前'
+            status:'作業前'
           })
     }) 
   })
+  commit('changeStatus',payload)
 },
-  initTodos({ commit }) {
-    commit('initTodos');
-  },
-
+//itiran.vueからidとstatusを取得,statusが作業前→作業中→完了に変異するようにする
 }
