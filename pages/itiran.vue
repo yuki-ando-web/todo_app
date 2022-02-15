@@ -11,16 +11,15 @@
         <div class="float-right">  
          <v-btn class="button" 
         v-bind:class="{
-            'button--yet':todo.state == '作業前',
-            'button--progress':todo.state == '作業中',
-            'button--done':todo.state == '完了'}" 
-          @click="changeState(todo)"
+            'button--yet':todo.status == '作業前',
+            'button--progress':todo.status == '作業中',
+            'button--done':todo.status == '完了'}" 
+          @click="changeStatus(todo)"
           color="#EEEEEE"
           > 
-     {{ todo.state }}
+     {{ todo.status }}
    </v-btn>
         </div>
-
           <h1 class="card-title">{{ todo.title }}</h1>
           <p class="card-content">{{ todo.content }}</p>
         </div>
@@ -37,30 +36,20 @@
 
 <script>
 export default {
-  data() {
-    return {
-    };
-  },
   created(){
     this.$store.dispatch('todos/fetchTodos')
   },
-
+// stateの値を初期化,firestoreの値をstateに反映
   methods: {
     deleteTodo(id) {
       this.$store.dispatch("todos/deleteTodo", { id })
-      .then(() => {
-        setTimeout(() =>{
-          this.$store.dispatch('todos/fetchTodos')
-        },100)
-      })
     },
-    
-    changeState: function (todo) {
-      this.$store.commit("todos/changeState",todo)
-      // this.$store.dispatch('todos/changeState',{todo})
+    changeStatus: function (todo) {
+      this.$store.dispatch('todos/changeStatus',{todo})
     },
-  },
-};
+    // deleteTodoとchangeStatusはfetchTodosを利用すると画面がリロードされるため,stateを変更
+}
+}
 </script>
 
 <style>
