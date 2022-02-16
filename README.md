@@ -1,5 +1,6 @@
 # todo-saigo
 
+/todosが初期ページとなります
 
 
 stateの変更方法が複数あります。

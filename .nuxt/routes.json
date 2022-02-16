@@ -1,0 +1,23 @@
+[
+  {
+    "name": "itiran",
+    "path": "/itiran",
+    "component": "/Users/yuukiandou/Desktop/学習/todo-saigo/pages/itiran.vue",
+    "chunkName": "pages/itiran",
+    "_name": "_ad73af60"
+  },
+  {
+    "name": "todos",
+    "path": "/todos",
+    "component": "/Users/yuukiandou/Desktop/学習/todo-saigo/pages/todos.vue",
+    "chunkName": "pages/todos",
+    "_name": "_377e7eae"
+  },
+  {
+    "name": "about-id",
+    "path": "/about/:id?",
+    "component": "/Users/yuukiandou/Desktop/学習/todo-saigo/pages/about/_id.vue",
+    "chunkName": "pages/about/_id",
+    "_name": "_7075a7f9"
+  }
+]
