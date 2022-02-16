@@ -4,8 +4,6 @@ router.jsを変更し、todos.vueが初期ページになるようにしてい�
 その変更をgitに反映させるため.nuxtディレクトリをgitに載せています
 
 
-
-
 stateの変更方法が複数あります。
 
 一つ目はhttps://www.autovice.jp/articles/78
