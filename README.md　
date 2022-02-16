@@ -1,9 +1,11 @@
 # todo-saigo
 
-router.jsを変更し、todos.vueが初期ページになるようにしています。  その変更をgitに反映させるため.nuxtディレクトリをgitに載せています
+
+## 説明
+##router.jsを変更し、todos.vueが初期ページになるようにしています。  その変更をgitに反映させるため.nuxtディレクトリをgitに載せています
 
 
-stateの変更方法が複数あります。
+##stateの変更方法が複数あります。
 
 一つ目はhttps://www.autovice.jp/articles/78
 のようにstateを初期化して,firestoreの値をsteteに入れる方法です。一覧画面のfetchTodosで発動します。
