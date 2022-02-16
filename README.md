@@ -1,7 +1,6 @@
 # todo-saigo
 
-router.jsを変更し、todos.vueが初期ページになるようにしています。
-その変更をgitに反映させるため.nuxtディレクトリをgitに載せています
+router.jsを変更し、todos.vueが初期ページになるようにしています。  その変更をgitに反映させるため.nuxtディレクトリをgitに載せています
 
 
 stateの変更方法が複数あります。
