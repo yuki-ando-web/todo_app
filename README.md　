@@ -1,6 +1,4 @@
 # todo-saigo
-
-
 ## 説明
 ## router.jsを変更し、todos.vueが初期ページになるようにしています。  その変更をgitに反映させるため.nuxtディレクトリをgitに載せています
 
