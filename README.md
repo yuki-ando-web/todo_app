@@ -1,8 +1,10 @@
 # todo-saigo
 
+/todosが初期ページとなります
 
 
 stateの変更方法が複数あります。
+
 一つ目はhttps://www.autovice.jp/articles/78
 のようにstateを初期化して,firestoreの値をsteteに入れる方法です。一覧画面のfetchTodosで発動します。
 新規投稿と更新はfetchTodoによってstateの値を変更します。
@@ -12,7 +14,9 @@ Todo削除と進行状況の変更は,fetchTodosを使うと画面がリロー�
 
 
 疑問点
+
 ・chengeStatus（進行状況の変化）はもっとすっきりコードをかけるか
+
 ・上述したようにstateの変更方法に「初期化した後firestoreの値をstateに入れる」という選択したが問題ないか
 （ぱっと思いついた疑問→todoが増えすぎたときに、todoを表示させるために初期化,firestoreをstateに格納するときに処理が重くなるのでは？）
 ## Build Setup
